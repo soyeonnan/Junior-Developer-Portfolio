@@ -64,3 +64,16 @@
 .card p {
   color: var(--text-muted);
 }
+
+.about-text .author-name {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-top: calc(var(--spacing-md) * -0.5);
+  margin-bottom: var(--spacing-md);
+  font-weight: 400;
+}
+
+.about-text .author-name .highlight-name {
+  color: var(--primary-color);
+  font-weight: 600;
+}

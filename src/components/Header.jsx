@@ -23,7 +23,7 @@ const Header = () => {
     <header className={`header ${scrolled ? 'scrolled' : ''}`}>
       <div className="container header-content">
         <div className="logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-          J<span>.DEV</span>
+          SOYEON <span>HAN</span>
         </div>
         <nav className="nav">
           <ul>

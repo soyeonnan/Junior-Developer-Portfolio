@@ -7,25 +7,29 @@ const About = () => {
         <h2 className="section-title">About Me</h2>
         <div className="about-content">
           <div className="about-text">
-            <h3>Run with Passion, Code with Precision.</h3>
+            <h3>I turn complex problems into simple systems.</h3>
+
             <p>
-              안녕하세요, 끊임없이 달리는 신입 개발자입니다.<br />
-              코드를 작성하며 느끼는 몰입의 즐거움과<br />
-              어제보다 더 나은 내가 되기 위한 성장의 가속도를 지향합니다.
+              다양한 프로젝트를 경험하며<br />
+              데이터 흐름과 시스템 구조의 중요성을 배워왔습니다.<br />
+              <br />
+              기능 구현에 앞서
+              데이터 전달 방식과 예외 상황을 먼저 고민하고, <br />
+              더 안정적인 코드를 만들고자 합니다.
             </p>
             <p className="sub-text">
-              #WebDeveloper #Frontend #Passion #FastLearner
+              #DataFlow #ServiceStructure #LearningByDoing #GrowthMindset
             </p>
           </div>
 
           <div className="about-cards">
             <div className="card">
-              <h4>Education</h4>
-              <p>Computer Science / 2024</p>
+              <h4>Role</h4>
+              <p>Junior Backend Developer</p>
             </div>
             <div className="card">
-              <h4>Experience</h4>
-              <p>Personal Projects & Open Source</p>
+              <h4>Focus</h4>
+              <p>Data Flow · System Structure · Stability</p>
             </div>
           </div>
         </div>
