@@ -1,0 +1,81 @@
+.contact-section {
+  background: #0ec0ec;
+  /* Mistake? No wait, this is bright blue. I want black. #000 */
+  background: #000;
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.contact-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  justify-content: center;
+  width: 100%;
+}
+
+.contact-card {
+  text-align: center;
+  background: #111;
+  padding: var(--spacing-xl);
+  border-radius: 12px;
+  border: 1px solid #333;
+  max-width: 600px;
+  width: 100%;
+  margin-bottom: var(--spacing-xl);
+}
+
+.contact-card h3 {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  color: var(--text-color);
+  margin-bottom: var(--spacing-md);
+}
+
+.contact-card p {
+  color: var(--text-muted);
+  margin-bottom: var(--spacing-lg);
+}
+
+.email-link {
+  display: inline-block;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin-bottom: var(--spacing-lg);
+  font-weight: 700;
+  transition: transform 0.3s ease;
+}
+
+.email-link:hover {
+  transform: scale(1.05);
+}
+
+.social-links {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-lg);
+}
+
+.social-links a {
+  color: var(--text-color);
+  font-weight: 500;
+  font-size: 1.1rem;
+  border-bottom: 1px solid transparent;
+}
+
+.social-links a:hover {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.footer {
+  padding: var(--spacing-lg) 0;
+  text-align: center;
+  color: #444;
+  font-size: 0.8rem;
+  width: 100%;
+  border-top: 1px solid #111;
+}
