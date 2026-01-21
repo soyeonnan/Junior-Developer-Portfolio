@@ -79,3 +79,47 @@
   width: 100%;
   border-top: 1px solid #111;
 }
+
+@media (max-width: 768px) {
+  .contact-section {
+    padding: 40px 16px;
+    min-height: auto;
+  }
+
+  .contact-card {
+    padding: var(--spacing-lg);
+    margin-bottom: var(--spacing-lg);
+  }
+
+  .contact-card h3 {
+    font-size: 1.4rem;
+  }
+
+  .contact-card p {
+    font-size: 0.9rem;
+    margin-bottom: var(--spacing-md);
+  }
+
+  .email-link {
+    font-size: 1rem;
+    word-break: break-all;
+    /* Prevent overflow */
+    display: block;
+    text-align: center;
+  }
+
+  .social-links {
+    gap: var(--spacing-md);
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .social-links a {
+    font-size: 0.9rem;
+  }
+
+  .footer {
+    padding: var(--spacing-md) 0;
+    font-size: 0.7rem;
+  }
+}
