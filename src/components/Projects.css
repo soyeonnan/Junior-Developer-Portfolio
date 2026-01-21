@@ -304,11 +304,100 @@
 }
 
 @media (max-width: 768px) {
+  .project-nav-container {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 0 20px;
+    -webkit-overflow-scrolling: touch;
+    /* Smooth scroll on iOS */
+  }
+
+  .project-nav {
+    gap: 10px;
+    /* Smaller gap */
+    white-space: nowrap;
+    /* Keep tabs on one line */
+    padding-right: 20px;
+    /* End padding */
+  }
+
+  /* Hide scrollbar for nav */
+  .project-nav-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .project-tab {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+
+  .project-slide-container {
+    padding: 10px;
+    /* Reduce container padding */
+    height: calc(100vh - 120px) !important;
+    /* Adjust for potentially smaller header/nav */
+    margin-top: 120px !important;
+    /* Mobile offset */
+  }
+
   .slide-card {
     padding: 20px;
+    width: 100%;
+    border-radius: 12px;
+  }
+
+  .card-top-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-top-info>div {
+    /* Title and GitHub link wrapper */
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .card-project-title {
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60%;
+  }
+
+  .github-link {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+  }
+
+  .project-duration {
+    font-size: 0.8rem !important;
+    margin-left: 0 !important;
+    margin-top: 5px;
+    display: block;
   }
 
   .slide-header h4 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
+  }
+
+  .slide-role {
+    font-size: 0.9rem;
+  }
+
+  .featured-summary,
+  .implementation-list li,
+  .trouble-problem,
+  .trouble-solution,
+  .arch-description {
+    font-size: 0.95rem;
+    /* Readable body text */
+  }
+
+  /* Adjust architecture diagram font size */
+  .arch-diagram {
+    font-size: 0.7rem;
   }
 }
