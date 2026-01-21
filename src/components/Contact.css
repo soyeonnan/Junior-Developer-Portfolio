@@ -82,7 +82,13 @@
 @media (max-width: 768px) {
   .contact-section {
     padding: 40px 16px;
-    min-height: auto;
+    min-height: 100vh;
+    /* Full height on mobile too */
+    background: #000;
+    /* Ensure solid background */
+    position: relative;
+    z-index: 10;
+    /* Above projects section */
   }
 
   .contact-card {

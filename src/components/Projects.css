@@ -303,12 +303,13 @@
   .project-nav-container::before {
     content: '';
     position: absolute;
-    top: -10px;
-    /* Extend above to cover any gap */
+    top: -60px;
+    /* Match mobile header height to fully cover gap */
     left: 0;
     width: 100%;
-    height: 10px;
+    height: 60px;
     background: #0a0a0a;
+    z-index: -1;
   }
 
   /* Override margin from desktop (no margin needed since nav is relative/sticky in flow) */
