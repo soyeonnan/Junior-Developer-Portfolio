@@ -409,6 +409,9 @@ const Projects = () => {
   }, [allSlides.length]); // Removed activeProject to prevent re-initialization
 
   const scrollToProject = (projectId) => {
+    // Immediately update active state when tab is clicked
+    setActiveProject(projectId);
+
     const slideIndex = allSlides.findIndex(slide => slide.projectId === projectId);
     if (slideIndex !== -1) {
       if (window.innerWidth > 768) {
