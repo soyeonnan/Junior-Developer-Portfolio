@@ -288,8 +288,8 @@
   /* Sticky Nav on Mobile */
   .project-nav-container {
     position: sticky;
-    top: 60px;
-    /* Mobile header height */
+    top: 50px;
+    /* Match scrolled header height */
     height: 50px;
     background: #0a0a0a;
     justify-content: flex-start;
