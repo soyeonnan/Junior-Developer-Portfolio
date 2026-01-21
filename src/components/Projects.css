@@ -289,9 +289,7 @@
   .project-nav-container {
     position: sticky;
     top: var(--header-height);
-    /* Stick right below the global header which is presumably fixed */
     height: 50px;
-    /* Slightly smaller nav height on mobile */
     background: #0a0a0a;
     justify-content: flex-start;
     overflow-x: auto;
@@ -299,6 +297,18 @@
     z-index: 100;
     align-items: center;
     border-bottom: 1px solid #222;
+  }
+
+  /* Cover any potential gap above the nav */
+  .project-nav-container::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    /* Extend above to cover any gap */
+    left: 0;
+    width: 100%;
+    height: 10px;
+    background: #0a0a0a;
   }
 
   /* Override margin from desktop (no margin needed since nav is relative/sticky in flow) */
