@@ -372,56 +372,89 @@ const Projects = () => {
   );
 
   useEffect(() => {
-    // Note: Provide ScrollToPlugin via window or import if possible.
-    // Assuming GSAP is globally available or imported correctly.
     const wrapper = wrapperRef.current;
     const totalSlides = allSlides.length;
+    let mm = gsap.matchMedia();
 
-    const scrollTween = gsap.to(wrapper, {
-      xPercent: -100 * (totalSlides - 1) / totalSlides,
-      ease: 'none',
-      scrollTrigger: {
-        id: "projects-scroll",
-        trigger: sectionRef.current,
-        pin: true,
-        scrub: 1,
-        snap: 1 / (totalSlides - 1),
-        end: () => "+=" + (window.innerWidth * (totalSlides - 1)),
-        onUpdate: (self) => {
-          const currentSlideIndex = Math.round(self.progress * (totalSlides - 1));
-          const currentSlide = allSlides[currentSlideIndex];
-          if (currentSlide && currentSlide.projectId !== activeProject) {
-            setActiveProject(currentSlide.projectId);
+    mm.add("(min-width: 769px)", () => {
+      // Desktop: Scroll-jacking / Pinning
+      const scrollTween = gsap.to(wrapper, {
+        xPercent: -100 * (totalSlides - 1) / totalSlides,
+        ease: 'none',
+        scrollTrigger: {
+          id: "projects-scroll",
+          trigger: sectionRef.current,
+          pin: true,
+          scrub: 1,
+          snap: 1 / (totalSlides - 1),
+          end: () => "+=" + (window.innerWidth * (totalSlides - 1)),
+          onUpdate: (self) => {
+            const currentSlideIndex = Math.round(self.progress * (totalSlides - 1));
+            const currentSlide = allSlides[currentSlideIndex];
+            if (currentSlide && currentSlide.projectId !== activeProject) {
+              setActiveProject(currentSlide.projectId);
+            }
           }
         }
-      }
+      });
     });
 
-    return () => {
-      scrollTween.kill();
-      ScrollTrigger.getAll().forEach(t => t.kill());
-    };
-  }, [allSlides.length]);
+    mm.add("(max-width: 768px)", () => {
+      // Mobile: Native Horizontal Scroll Tracking
+      // We don't pin. We just track which project is visible.
+      // Since we are using native scrolling on the container, we can use ScrollTrigger with horizontal: true
+      // BUT we need to target the container that scrolls.
+      // In this layout, the '.projects-scroll-wrapper' (which we will ensure allows scroll) scrolls.
+      // For simplicity in React, let's just assume the wrapperRef's PARENT scrolls.
+
+      // Actually, we can just use a simple ScrollTrigger on the wrapper itself if it moved? 
+      // No, for native scroll, the wrapper doesn't move via transform. The VIEWPORT moves.
+      // So we need to trigger based on scroll position of the container.
+      // Let's rely on a simple scroll listener on the container for mobile active state to avoid complex GSAP horizontal config on a container we just made scrollable.
+    });
+
+    return () => mm.revert();
+  }, [allSlides.length, activeProject]); // Added activeProject to dep array if needed, but setState is safe.
 
   const scrollToProject = (projectId) => {
     const slideIndex = allSlides.findIndex(slide => slide.projectId === projectId);
     if (slideIndex !== -1) {
-      const totalSlides = allSlides.length;
-      const progress = slideIndex / (totalSlides - 1);
+      if (window.innerWidth > 768) {
+        // Desktop ScrollTo
+        const totalSlides = allSlides.length;
+        const progress = slideIndex / (totalSlides - 1);
+        const scrollTriggerInstance = ScrollTrigger.getById("projects-scroll");
+        if (scrollTriggerInstance) {
+          const start = scrollTriggerInstance.start;
+          const end = scrollTriggerInstance.end;
+          const targetScroll = start + (end - start) * progress;
+          gsap.to(window, { scrollTo: targetScroll, duration: 1, ease: "power2.inOut" });
+        }
+      } else {
+        // Mobile ScrollTo (Horizontal)
+        // We find the slide element or calculate position
+        const targetSlide = wrapperRef.current.children[slideIndex];
+        if (targetSlide) {
+          targetSlide.scrollIntoView({ behavior: 'smooth', inline: 'start' });
+        }
+      }
+    }
+  };
 
-      const scrollTriggerInstance = ScrollTrigger.getById("projects-scroll");
-      if (scrollTriggerInstance) {
-        const start = scrollTriggerInstance.start;
-        const end = scrollTriggerInstance.end;
-        const targetScroll = start + (end - start) * progress;
-
-        gsap.to(window, { scrollTo: targetScroll, duration: 1, ease: "power2.inOut" });
+  const handleMobileScroll = (e) => {
+    if (window.innerWidth <= 768) {
+      const scrollLeft = e.target.scrollLeft;
+      const width = e.target.clientWidth;
+      const index = Math.round(scrollLeft / width);
+      const currentSlide = allSlides[index];
+      if (currentSlide && currentSlide.projectId !== activeProject) {
+        setActiveProject(currentSlide.projectId);
       }
     }
   };
 
   return (
-    <section ref={sectionRef} id="projects" className="section projects-section" style={{ overflow: 'hidden', position: 'relative' }}>
+    <section ref={sectionRef} id="projects" className="section projects-section">
 
       {/* Sticky Navigation */}
       <div className="project-nav-container">
@@ -438,7 +471,11 @@ const Projects = () => {
         </div>
       </div>
 
-      <div className="container" style={{ maxWidth: '100%', padding: 0 }}>
+      <div
+        className="container projects-scroll-wrapper"
+        style={{ maxWidth: '100%', padding: 0 }}
+        onScroll={handleMobileScroll}
+      >
         {/* 'Detail Experience' Title Removed from here as it takes up space, or we can move it to the slide itself or keep it if design permits. 
             User asked to fit "Project info" on each card. 
             The previous h2 was getting in the way of the full-height layout. 

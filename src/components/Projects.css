@@ -3,23 +3,151 @@
   color: #fff;
   overflow-x: hidden;
   position: relative;
+  /* Desktop default: scroll-jack handles the flow */
   height: 100vh;
-  /* Fix height to viewport */
   padding-top: 0;
-  /* Removing default section padding */
 }
 
-/* Sticky Navigation */
+/* ... existing desktop styles ... */
+
+@media (max-width: 768px) {
+
+  /* Section Layout for Mobile */
+  .projects-section {
+    padding-top: 80px;
+    /* Offset for global fixed header */
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    /* Restore natural flow */
+  }
+
+  /* Nav Stickiness */
+  .project-nav-container {
+    position: sticky;
+    top: 80px;
+    /* Stick right under the fixed global header */
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 0 20px;
+    background: #0a0a0a;
+    -webkit-overflow-scrolling: touch;
+    z-index: 90;
+  }
+
+  /* Horizontal Scroll Wrapper */
+  .projects-scroll-wrapper {
+    margin-top: 0;
+    padding-top: 20px;
+    /* Gap between nav and cards */
+    height: auto;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    width: 100vw;
+  }
+
+  /* Slide Container & Card Sizing */
+  .project-slide-container {
+    padding: 10px;
+    margin-top: 0 !important;
+    /* Reset desktop margin */
+    height: auto !important;
+    /* Let content dictate height or fix minimal height */
+    min-height: 70vh;
+    width: 100vw !important;
+    /* Full width for swipe */
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  .slide-card {
+    width: 100%;
+    padding: 20px;
+    border-radius: 12px;
+    height: 100%;
+    overflow-y: visible;
+    /* Let card grow if needed or keep scroll */
+  }
+
+  /* Fonts & Visibility Tweaks */
+  .project-nav {
+    gap: 10px;
+    white-space: nowrap;
+    padding-right: 20px;
+  }
+
+  .project-nav-container::-webkit-scrollbar {
+    display: none;
+  }
+
+  .project-tab {
+    font-size: 0.9rem;
+    padding: 6px 12px;
+  }
+
+  .card-top-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+  }
+
+  .card-top-info>div {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .card-project-title {
+    font-size: 1.1rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 60%;
+  }
+
+  .github-link {
+    padding: 4px 10px;
+    font-size: 0.75rem;
+  }
+
+  .project-duration {
+    font-size: 0.8rem !important;
+    margin-left: 0 !important;
+    margin-top: 5px;
+    display: block;
+  }
+
+  .slide-header h4 {
+    font-size: 1.4rem;
+  }
+
+  .slide-role {
+    font-size: 0.9rem;
+  }
+
+  .featured-summary,
+  .implementation-list li,
+  .trouble-problem,
+  .trouble-solution,
+  .arch-description {
+    font-size: 0.95rem;
+  }
+
+  .arch-diagram {
+    font-size: 0.7rem;
+  }
+}
+
+/* Sticky Navigation - Default Desktop: Absolute */
 .project-nav-container {
   position: absolute;
-  top: 80px;
-  /* Match header height */
+  top: 0;
   left: 0;
   width: 100%;
   height: 60px;
-  /* Fixed height for nav */
   z-index: 90;
-  /* Below header (1000) but above content */
   background: rgba(10, 10, 10, 0.95);
   border-bottom: 1px solid #333;
   padding: 0;
@@ -27,6 +155,8 @@
   justify-content: center;
   align-items: center;
 }
+
+/* ... existing styles ... */
 
 .project-nav {
   display: flex;
@@ -301,103 +431,4 @@
 
 .slide-card::-webkit-scrollbar-thumb:hover {
   background: #555;
-}
-
-@media (max-width: 768px) {
-  .project-nav-container {
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding: 0 20px;
-    -webkit-overflow-scrolling: touch;
-    /* Smooth scroll on iOS */
-  }
-
-  .project-nav {
-    gap: 10px;
-    /* Smaller gap */
-    white-space: nowrap;
-    /* Keep tabs on one line */
-    padding-right: 20px;
-    /* End padding */
-  }
-
-  /* Hide scrollbar for nav */
-  .project-nav-container::-webkit-scrollbar {
-    display: none;
-  }
-
-  .project-tab {
-    font-size: 0.9rem;
-    padding: 6px 12px;
-  }
-
-  .project-slide-container {
-    padding: 10px;
-    /* Reduce container padding */
-    height: calc(100vh - 120px) !important;
-    /* Adjust for potentially smaller header/nav */
-    margin-top: 120px !important;
-    /* Mobile offset */
-  }
-
-  .slide-card {
-    padding: 20px;
-    width: 100%;
-    border-radius: 12px;
-  }
-
-  .card-top-info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 1.5rem;
-  }
-
-  .card-top-info>div {
-    /* Title and GitHub link wrapper */
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .card-project-title {
-    font-size: 1.1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 60%;
-  }
-
-  .github-link {
-    padding: 4px 10px;
-    font-size: 0.75rem;
-  }
-
-  .project-duration {
-    font-size: 0.8rem !important;
-    margin-left: 0 !important;
-    margin-top: 5px;
-    display: block;
-  }
-
-  .slide-header h4 {
-    font-size: 1.4rem;
-  }
-
-  .slide-role {
-    font-size: 0.9rem;
-  }
-
-  .featured-summary,
-  .implementation-list li,
-  .trouble-problem,
-  .trouble-solution,
-  .arch-description {
-    font-size: 0.95rem;
-    /* Readable body text */
-  }
-
-  /* Adjust architecture diagram font size */
-  .arch-diagram {
-    font-size: 0.7rem;
-  }
 }
