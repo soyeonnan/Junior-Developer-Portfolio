@@ -356,6 +356,8 @@ const Projects = () => {
   const [activeProjectIndex, setActiveProjectIndex] = React.useState(0);
   const [activeSlideIndex, setActiveSlideIndex] = React.useState(0);
   const slideRef = useRef(null);
+  const lastScrollTime = useRef(0);
+  const touchStartX = useRef(0);
 
   const currentProject = projects[activeProjectIndex];
   const totalSlides = currentProject.slides.length;
@@ -373,16 +375,64 @@ const Projects = () => {
     setActiveSlideIndex(0);
   };
 
+  // Handle Wheel (Scroll) Events
+  const handleWheel = (e) => {
+    const now = Date.now();
+    if (now - lastScrollTime.current < 800) return; // Cooldown to prevent rapid skipping
+
+    if (Math.abs(e.deltaY) > 30) { // Threshold
+      if (e.deltaY > 0) {
+        // Scroll Down -> Next Slide
+        if (activeSlideIndex < totalSlides - 1) {
+          e.preventDefault();
+          nextSlide();
+          lastScrollTime.current = now;
+        }
+        // If it's the last slide, let the natural page scroll take over
+      } else {
+        // Scroll Up -> Prev Slide
+        if (activeSlideIndex > 0) {
+          e.preventDefault();
+          prevSlide();
+          lastScrollTime.current = now;
+        }
+        // If it's the first slide, let the natural page scroll take over
+      }
+    }
+  };
+
+  // Handle Touch Swipes for Mobile
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    const touchEndX = e.changedTouches[0].clientX;
+    const deltaX = touchStartX.current - touchEndX;
+
+    if (Math.abs(deltaX) > 50) { // Swipe threshold
+      if (deltaX > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+  };
+
   useEffect(() => {
     // Fade in animation when slide or project changes
     gsap.fromTo(slideRef.current,
-      { opacity: 0, y: 20 },
-      { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+      { opacity: 0, x: 20 },
+      { opacity: 1, x: 0, duration: 0.4, ease: "power2.out" }
     );
   }, [activeProjectIndex, activeSlideIndex]);
 
   return (
-    <section id="projects" className="section projects-section">
+    <section
+      id="projects"
+      className="section projects-section"
+      onWheel={handleWheel}
+    >
       <div className="container">
         {/* Project Navigation Tabs */}
         <div className="project-nav-container">
@@ -400,7 +450,11 @@ const Projects = () => {
         </div>
 
         {/* Carousel Content Area */}
-        <div className="carousel-wrapper">
+        <div
+          className="carousel-wrapper"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+        >
           <button className="carousel-control prev" onClick={prevSlide} aria-label="Previous Slide">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <polyline points="15 18 9 12 15 6"></polyline>
@@ -408,9 +462,7 @@ const Projects = () => {
           </button>
 
           <div className="carousel-content" ref={slideRef}>
-            {/* The current slide */}
             <div className="project-card slide-card">
-              {/* Card Header Info */}
               <div className="card-top-info">
                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
                   <span className="card-project-title">{currentProject.title}</span>
@@ -428,14 +480,12 @@ const Projects = () => {
                       <span>GitHub</span>
                     </a>
                   )}
-                  <span className="project-duration">
-                    {currentProject.duration}
-                  </span>
+                  <span className="project-duration">{currentProject.duration}</span>
                 </div>
                 <span className="card-pagination">{activeSlideIndex + 1} / {totalSlides}</span>
               </div>
 
-              {/* Slide Content */}
+              {/* Slide Content Rendering */}
               {(() => {
                 const slide = currentProject.slides[activeSlideIndex];
                 if (slide.type === "featured") return <FeaturedSlide {...slide.content} title={slide.title} />;
