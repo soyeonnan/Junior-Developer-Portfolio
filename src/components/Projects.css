@@ -6,173 +6,192 @@
   background: #0a0a0a;
   color: #fff;
   position: relative;
-  /* Desktop Layout */
-  height: 100vh;
-  /* Push content down by header height to avoid overlap */
+  min-height: 100vh;
   padding-top: var(--header-height);
-  overflow: hidden;
+  padding-bottom: 4rem;
+  display: flex;
+  flex-direction: column;
 }
 
-/* Sticky Navigation (Desktop) */
+/* Tab Navigation */
 .project-nav-container {
-  position: absolute;
-  top: var(--header-height);
-  /* Position right below the global header */
-  left: 0;
   width: 100%;
-  height: var(--nav-height);
-  z-index: 90;
-  background: rgba(10, 10, 10, 0.95);
-  border-bottom: 1px solid #333;
+  padding: 1.5rem 0;
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(10px);
+  z-index: 10;
   display: flex;
   justify-content: center;
-  align-items: center;
+  margin-bottom: 2rem;
 }
 
 .project-nav {
   display: flex;
-  gap: 20px;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .project-tab {
-  background: transparent;
-  border: none;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #888;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 500;
   cursor: pointer;
-  padding: 8px 16px;
-  border-radius: 20px;
-  transition: all 0.3s ease;
+  padding: 10px 20px;
+  border-radius: 30px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: var(--font-heading);
 }
 
 .project-tab:hover {
-  color: #fff;
   background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: translateY(-2px);
 }
 
 .project-tab.active {
-  color: #0a0a0a;
   background: var(--primary-color);
+  color: #000;
+  border-color: var(--primary-color);
   font-weight: 700;
+  box-shadow: 0 4px 15px rgba(212, 31, 77, 0.3);
 }
 
-/* Projects List & Container */
-.projects-list {
+/* Carousel Layout */
+.carousel-wrapper {
   display: flex;
-  height: 100%;
+  align-items: center;
+  gap: 20px;
+  position: relative;
+  max-width: 1300px;
+  margin: 0 auto;
+  width: 100%;
+  flex: 1;
 }
 
-.project-slide-container {
-  /* Desktop card container */
-  box-sizing: border-box;
-  /* Fill available height: Viewport - Header - Nav */
-  height: calc(100vh - var(--header-height) - var(--nav-height));
-  margin-top: var(--nav-height);
-  /* Push down by nav height */
-  width: 100vw;
-  /* One slide per view */
-  padding: 20px;
+.carousel-content {
+  flex: 1;
+  width: 100%;
+  min-height: 600px;
   display: flex;
   justify-content: center;
-  align-items: center;
 }
 
 .slide-card {
   background: #111;
   border: 1px solid #333;
-  border-radius: 16px;
-  padding: 30px 40px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 1100px;
   display: flex;
   flex-direction: column;
-  overflow-y: auto;
-  position: relative;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  width: 100%;
-  height: 100%;
-  max-width: 1200px;
-  /* Constrain max width */
+  transition: all 0.3s ease;
 }
 
-.slide-card:hover {
+/* Carousel Controls */
+.carousel-control {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  z-index: 5;
+}
+
+.carousel-control:hover {
+  background: var(--primary-color);
+  color: #000;
   border-color: var(--primary-color);
-  box-shadow: 0 10px 50px rgba(0, 255, 204, 0.1);
+  transform: scale(1.1);
 }
 
-/* Card Content Styles */
+/* Carousel Dots */
+.carousel-dots {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 2rem;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 0;
+}
+
+.dot.active {
+  background: var(--primary-color);
+  width: 25px;
+  border-radius: 10px;
+}
+
+/* Card Styling */
 .card-top-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
   padding-bottom: 1rem;
-  border-bottom: 1px solid #333;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .card-project-title {
   font-family: var(--font-heading);
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   color: #fff;
-  letter-spacing: 1px;
 }
 
 .project-duration {
   color: #888;
-  font-size: 0.9rem;
-  margin-left: 15px;
+  font-size: 0.95rem;
 }
 
 .github-link {
   display: flex;
   align-items: center;
-  gap: 8px;
-  background: rgba(10, 10, 10, 0.95);
-  color: #fff;
-  padding: 6px 16px;
-  border-radius: 20px;
-  border: 1px solid #333;
-  font-family: var(--font-heading);
+  gap: 6px;
+  color: #aaa;
   font-size: 0.85rem;
-  text-transform: uppercase;
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease;
 }
 
 .github-link:hover {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
-  color: #000;
-}
-
-.github-link:hover svg {
-  color: #000;
+  color: var(--primary-color);
 }
 
 .card-pagination {
   font-family: 'Courier New', monospace;
-  font-size: 0.9rem;
   color: var(--primary-color);
-  background: rgba(212, 31, 77, 0.1);
-  padding: 4px 10px;
-  border-radius: 4px;
-}
-
-.slide-header {
-  margin-bottom: 1.5rem;
+  font-weight: 700;
 }
 
 .slide-header h4 {
-  font-size: 1.8rem;
+  font-size: 2.2rem;
   color: var(--primary-color);
   margin-bottom: 0.5rem;
   font-family: var(--font-heading);
 }
 
 .slide-role {
-  font-size: 1rem;
+  font-size: 1.1rem;
   color: var(--text-muted);
+  margin-bottom: 1.5rem;
 }
 
 /* Feature specific styles */
@@ -200,8 +219,8 @@
 
 .arch-diagram-container {
   background: #000;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 24px;
+  border-radius: 12px;
   border: 1px dashed #444;
   margin-bottom: 1.5rem;
   overflow-x: auto;
@@ -210,10 +229,22 @@
 
 .arch-diagram {
   font-family: 'Courier New', Courier, monospace;
-  font-size: 0.85rem;
-  line-height: 1.4;
+  font-size: 0.9rem;
+  line-height: 1.5;
   color: #0f0;
   white-space: pre;
+  margin: 0;
+}
+
+.arch-description {
+  font-size: 1rem;
+  color: #ccc;
+  line-height: 1.6;
+}
+
+.implementation-list {
+  list-style: none;
+  padding: 0;
   margin: 0;
 }
 
@@ -222,7 +253,7 @@
   padding-left: 30px;
   margin-bottom: 15px;
   line-height: 1.6;
-  font-size: 1.05rem;
+  font-size: 1.1rem;
   color: #ddd;
 }
 
@@ -242,227 +273,80 @@
 
 .trouble-item {
   background: rgba(255, 255, 255, 0.03);
-  padding: 20px;
-  border-radius: 12px;
-  border: 1px solid #222;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .trouble-problem {
   color: #ff6b6b;
-  margin-bottom: 10px;
-  font-size: 1rem;
+  margin-bottom: 12px;
+  font-size: 1.1rem;
+  font-weight: 500;
 }
 
 .trouble-solution {
   color: #4ecdc4;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  line-height: 1.6;
 }
 
+/* Scrollbar for cards */
 .slide-card::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .slide-card::-webkit-scrollbar-track {
-  background: #111;
+  background: transparent;
 }
 
 .slide-card::-webkit-scrollbar-thumb {
   background: #333;
-  border-radius: 4px;
+  border-radius: 10px;
 }
 
+/* Responsive */
+@media (max-width: 1024px) {
+  .carousel-wrapper {
+    padding: 0 1rem;
+  }
+}
 
-/* =========================================
-   MOBILE / RESPONSIVE LAYOUT
-   ========================================= */
 @media (max-width: 768px) {
   .projects-section {
-    padding-top: var(--header-height);
-    /* Keep 80px offset */
-    height: auto;
-    min-height: 100vh;
-    overflow: visible;
-    /* Allow native scroll */
+    padding-top: calc(var(--header-height) + 1rem);
   }
 
-  /* Sticky Nav on Mobile */
-  .project-nav-container {
-    position: sticky;
-    top: 50px;
-    /* Match scrolled header height */
-    height: 50px;
-    background: #0a0a0a;
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding: 0 16px;
-    z-index: 100;
-    align-items: center;
-    border-bottom: 1px solid #222;
+  .carousel-wrapper {
+    flex-direction: column;
+    gap: 1rem;
   }
 
-  /* Cover any potential gap above the nav */
-  .project-nav-container::before {
-    content: '';
-    position: absolute;
-    top: -60px;
-    /* Match mobile header height to fully cover gap */
-    left: 0;
-    width: 100%;
-    height: 60px;
-    background: #0a0a0a;
-    z-index: -1;
+  .carousel-control {
+    display: none;
+    /* Hide side arrows on mobile, use swipe or dots */
   }
 
-  /* Override margin from desktop (no margin needed since nav is relative/sticky in flow) */
-  .project-slide-container {
-    margin-top: 0 !important;
-    height: auto !important;
+  .carousel-content {
     min-height: auto;
-    /* Let content decide, no forced min-height */
-    max-height: calc(100vh - 130px);
-    /* Cap height to fit screen (header + nav) */
-    padding: 8px 12px 20px 12px;
-    width: 100vw;
-    overflow-y: auto;
-    /* Allow scroll within card if content overflows */
   }
 
-  /* Horizontal scroll wrapper */
-  .projects-scroll-wrapper {
-    display: flex;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    width: 100%;
-    height: auto;
-    padding-top: 10px;
-  }
-
-  /* Ensure slides snap */
-  .project-slide-container {
-    scroll-snap-align: start;
-    flex-shrink: 0;
-  }
-
-  /* Card Mobile Styles */
   .slide-card {
-    padding: 16px;
-    height: auto;
-    max-height: 100%;
-    overflow-y: auto;
+    padding: 24px;
+    border-radius: 16px;
   }
 
   .card-top-info {
     flex-direction: column;
     align-items: flex-start;
-    gap: 8px;
-    margin-bottom: 0.75rem;
-    padding-bottom: 0.5rem;
-  }
-
-  .card-top-info>div {
-    width: 100%;
-    flex-wrap: wrap;
-  }
-
-  .card-project-title {
-    font-size: 1rem;
-    max-width: 100%;
-    margin-bottom: 2px;
-  }
-
-  .project-duration {
-    display: block;
-    margin-left: 0;
-    margin-top: 2px;
-    font-size: 0.7rem;
-  }
-
-  .card-pagination {
-    font-size: 0.75rem;
-    padding: 2px 6px;
-  }
-
-  .github-link {
-    padding: 3px 8px;
-    font-size: 0.65rem;
-  }
-
-  .github-link svg {
-    width: 14px;
-    height: 14px;
-  }
-
-  .project-nav {
-    padding-right: 16px;
-  }
-
-  .project-tab {
-    white-space: nowrap;
-    font-size: 0.75rem;
-    padding: 5px 10px;
-  }
-
-  /* Font adjustments for mobile readability */
-  .slide-header {
-    margin-bottom: 0.75rem;
-  }
-
-  .slide-header h4 {
-    font-size: 1.1rem;
-    margin-bottom: 0.25rem;
-  }
-
-  .slide-role {
-    font-size: 0.75rem;
-  }
-
-  .featured-summary {
-    font-size: 0.8rem;
-    line-height: 1.5;
-    margin-bottom: 1rem;
-  }
-
-  .tech-stack-display {
-    gap: 6px;
-  }
-
-  .tech-badge {
-    font-size: 0.7rem;
-    padding: 4px 10px;
-  }
-
-  .arch-diagram-container {
-    padding: 10px;
-    margin-bottom: 0.75rem;
-  }
-
-  .arch-diagram {
-    font-size: 0.55rem;
-    line-height: 1.3;
-  }
-
-  .arch-description {
-    font-size: 0.75rem;
-  }
-
-  .implementation-list li {
-    font-size: 0.8rem;
-    margin-bottom: 8px;
-    padding-left: 20px;
-    line-height: 1.4;
-  }
-
-  .trouble-list {
     gap: 10px;
   }
 
-  .trouble-item {
-    padding: 12px;
+  .card-project-title {
+    font-size: 1.4rem;
   }
 
-  .trouble-problem,
-  .trouble-solution {
-    font-size: 0.75rem;
+  .slide-header h4 {
+    font-size: 1.6rem;
   }
 }

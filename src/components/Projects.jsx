@@ -353,184 +353,116 @@ const projects = [
 ];
 
 const Projects = () => {
+  const [activeProjectIndex, setActiveProjectIndex] = React.useState(0);
+  const [activeSlideIndex, setActiveSlideIndex] = React.useState(0);
+  const slideRef = useRef(null);
 
-  const sectionRef = useRef(null);
-  const wrapperRef = useRef(null);
-  const [activeProject, setActiveProject] = React.useState(projects[0].id);
+  const currentProject = projects[activeProjectIndex];
+  const totalSlides = currentProject.slides.length;
 
-  // Flatten all slides to calculate total width and mapping
-  const allSlides = projects.flatMap(project =>
-    project.slides.map((slide, index) => ({
-      ...slide,
-      projectId: project.id,
-      projectTitle: project.title,
-      projectDuration: project.duration,
-      githubUrl: project.githubUrl,
-      slideIndex: index,
-      totalSlides: project.slides.length
-    }))
-  );
+  const nextSlide = () => {
+    setActiveSlideIndex((prev) => (prev + 1) % totalSlides);
+  };
+
+  const prevSlide = () => {
+    setActiveSlideIndex((prev) => (prev - 1 + totalSlides) % totalSlides);
+  };
+
+  const handleProjectTabClick = (index) => {
+    setActiveProjectIndex(index);
+    setActiveSlideIndex(0);
+  };
 
   useEffect(() => {
-    const wrapper = wrapperRef.current;
-    const totalSlides = allSlides.length;
-    let mm = gsap.matchMedia();
-
-    mm.add("(min-width: 769px)", () => {
-      // Desktop: Scroll-jacking / Pinning
-      // Move the wrapper so all slides scroll into view
-      // We need to move by (totalSlides - 1) * 100vw
-      gsap.to(wrapper, {
-        x: () => -(wrapper.scrollWidth - window.innerWidth),
-        ease: 'none',
-        scrollTrigger: {
-          id: "projects-scroll",
-          trigger: sectionRef.current,
-          pin: true,
-          scrub: 1,
-          snap: 1 / (totalSlides - 1),
-          end: () => "+=" + wrapper.scrollWidth,
-          onUpdate: (self) => {
-            const currentSlideIndex = Math.round(self.progress * (totalSlides - 1));
-            const currentSlide = allSlides[currentSlideIndex];
-            if (currentSlide && currentSlide.projectId !== activeProject) {
-              setActiveProject(currentSlide.projectId);
-            }
-          }
-        }
-      });
-    });
-
-    mm.add("(max-width: 768px)", () => {
-      // Mobile: No GSAP animation, uses native horizontal scroll
-    });
-
-    return () => mm.revert();
-  }, [allSlides.length]); // Removed activeProject to prevent re-initialization
-
-  const scrollToProject = (projectId) => {
-    // Immediately update active state when tab is clicked
-    setActiveProject(projectId);
-
-    const slideIndex = allSlides.findIndex(slide => slide.projectId === projectId);
-    if (slideIndex !== -1) {
-      if (window.innerWidth > 768) {
-        // Desktop ScrollTo
-        const totalSlides = allSlides.length;
-        // Calculate progress based on the slide index relative to total
-        const progress = slideIndex / (totalSlides - 1);
-
-        const scrollTriggerInstance = ScrollTrigger.getById("projects-scroll");
-        if (scrollTriggerInstance) {
-          const start = scrollTriggerInstance.start;
-          const end = scrollTriggerInstance.end;
-          const targetScroll = start + (end - start) * progress;
-          gsap.to(window, { scrollTo: targetScroll, duration: 1, ease: "power2.inOut" });
-        }
-      } else {
-        // Mobile ScrollTo (Horizontal)
-        // Find the specific slide element by index
-        // Since we are using a flat map, the index corresponds to the child index
-        const scrollWrapper = document.querySelector('.projects-scroll-wrapper');
-        const slideNodes = scrollWrapper ? scrollWrapper.querySelectorAll('.project-slide-container') : [];
-        const targetSlide = slideNodes[slideIndex];
-
-        if (targetSlide) {
-          targetSlide.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
-        }
-      }
-    }
-  };
-
-  const handleMobileScroll = (e) => {
-    if (window.innerWidth <= 768) {
-      const scrollLeft = e.target.scrollLeft;
-      const width = e.target.clientWidth; // offsetWidth
-      // Use Math.round to find the closest slide
-      const index = Math.round(scrollLeft / width);
-      const currentSlide = allSlides[index];
-      if (currentSlide && currentSlide.projectId !== activeProject) {
-        setActiveProject(currentSlide.projectId);
-      }
-    }
-  };
+    // Fade in animation when slide or project changes
+    gsap.fromTo(slideRef.current,
+      { opacity: 0, y: 20 },
+      { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
+    );
+  }, [activeProjectIndex, activeSlideIndex]);
 
   return (
-    <section ref={sectionRef} id="projects" className="section projects-section">
-
-      {/* Sticky Navigation */}
-      <div className="project-nav-container">
-        <div className="project-nav">
-          {projects.map((project) => (
-            <button
-              key={project.id}
-              className={`project-tab ${activeProject === project.id ? 'active' : ''}`}
-              onClick={() => scrollToProject(project.id)}
-            >
-              {project.title}
-            </button>
-          ))}
+    <section id="projects" className="section projects-section">
+      <div className="container">
+        {/* Project Navigation Tabs */}
+        <div className="project-nav-container">
+          <div className="project-nav">
+            {projects.map((project, index) => (
+              <button
+                key={project.id}
+                className={`project-tab ${activeProjectIndex === index ? 'active' : ''}`}
+                onClick={() => handleProjectTabClick(index)}
+              >
+                {project.title}
+              </button>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div
-        className="container projects-scroll-wrapper"
-        style={{ maxWidth: '100%', padding: 0 }}
-        onScroll={handleMobileScroll}
-      >
-        {/* 'Detail Experience' Title Removed from here as it takes up space, or we can move it to the slide itself or keep it if design permits. 
-            User asked to fit "Project info" on each card. 
-            The previous h2 was getting in the way of the full-height layout. 
-            Let's remove the separate h2 and rely on the card headers and global nav.
-        */}
+        {/* Carousel Content Area */}
+        <div className="carousel-wrapper">
+          <button className="carousel-control prev" onClick={prevSlide} aria-label="Previous Slide">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
 
-        <div ref={wrapperRef} className="projects-list" style={{
-          display: 'flex',
-          width: `${allSlides.length * 100}%`,
-          maxWidth: 'none',
-          flexDirection: 'row',
-          flexWrap: 'nowrap',
-          gap: 0,
-          height: '100%' // Ensure it fills the calculated height from CSS
-        }}>
-          {allSlides.map((slide, idx) => (
-            <div key={`${slide.projectId}-${slide.slideIndex}`} className="project-slide-container" style={{
-              width: '100vw',
-              flexShrink: 0
-              // Height handled by CSS
-            }}>
-              <div className="project-card slide-card">
-                <div className="card-top-info">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                    <span className="card-project-title">{slide.projectTitle}</span>
-                    {slide.githubUrl && (
-                      <a
-                        href={slide.githubUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="github-link"
-                        title="View on GitHub"
-                      >
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
-                        </svg>
-                        <span>GitHub</span>
-                      </a>
-                    )}
-                    {slide.projectDuration && (
-                      <span className="project-duration" style={{ color: '#888', fontSize: '0.9rem', marginLeft: '10px' }}>
-                        {slide.projectDuration}
-                      </span>
-                    )}
-                  </div>
-                  <span className="card-pagination">{slide.slideIndex + 1} / {slide.totalSlides}</span>
+          <div className="carousel-content" ref={slideRef}>
+            {/* The current slide */}
+            <div className="project-card slide-card">
+              {/* Card Header Info */}
+              <div className="card-top-info">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                  <span className="card-project-title">{currentProject.title}</span>
+                  {currentProject.githubUrl && (
+                    <a
+                      href={currentProject.githubUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="github-link"
+                      title="View on GitHub"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"></path>
+                      </svg>
+                      <span>GitHub</span>
+                    </a>
+                  )}
+                  <span className="project-duration">
+                    {currentProject.duration}
+                  </span>
                 </div>
-                {slide.type === "featured" && <FeaturedSlide {...slide.content} title={slide.title} />}
-                {slide.type === "architecture" && <ArchitectureSlide {...slide.content} title={slide.title} />}
-                {slide.type === "implementation" && <ImplementationSlide items={slide.content} title={slide.title} />}
-                {slide.type === "troubleshooting" && <TroubleSlide items={slide.content} title={slide.title} />}
+                <span className="card-pagination">{activeSlideIndex + 1} / {totalSlides}</span>
               </div>
+
+              {/* Slide Content */}
+              {(() => {
+                const slide = currentProject.slides[activeSlideIndex];
+                if (slide.type === "featured") return <FeaturedSlide {...slide.content} title={slide.title} />;
+                if (slide.type === "architecture") return <ArchitectureSlide {...slide.content} title={slide.title} />;
+                if (slide.type === "implementation") return <ImplementationSlide items={slide.content} title={slide.title} />;
+                if (slide.type === "troubleshooting") return <TroubleSlide items={slide.content} title={slide.title} />;
+                return null;
+              })()}
             </div>
+          </div>
+
+          <button className="carousel-control next" onClick={nextSlide} aria-label="Next Slide">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+
+        {/* Indicator Dots */}
+        <div className="carousel-dots">
+          {currentProject.slides.map((_, idx) => (
+            <button
+              key={idx}
+              className={`dot ${activeSlideIndex === idx ? 'active' : ''}`}
+              onClick={() => setActiveSlideIndex(idx)}
+              aria-label={`Go to slide ${idx + 1}`}
+            />
           ))}
         </div>
       </div>
