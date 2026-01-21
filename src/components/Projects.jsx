@@ -378,21 +378,18 @@ const Projects = () => {
 
     mm.add("(min-width: 769px)", () => {
       // Desktop: Scroll-jacking / Pinning
-      const scrollTween = gsap.to(wrapper, {
-        xPercent: -100 * (totalSlides - 1) / totalSlides,
+      // Move the wrapper so all slides scroll into view
+      // We need to move by (totalSlides - 1) * 100vw
+      gsap.to(wrapper, {
+        x: () => -(wrapper.scrollWidth - window.innerWidth),
         ease: 'none',
         scrollTrigger: {
           id: "projects-scroll",
           trigger: sectionRef.current,
           pin: true,
-          scrub: 0.5, // Add a little smoothing
-          snap: {
-            snapTo: 1 / (totalSlides - 1),
-            duration: { min: 0.2, max: 0.5 },
-            delay: 0.1
-          },
-          // Increase drag distance to make scrolling less sensitive/fast
-          end: () => "+=" + (window.innerWidth * totalSlides * 1.2),
+          scrub: 1,
+          snap: 1 / (totalSlides - 1),
+          end: () => "+=" + wrapper.scrollWidth,
           onUpdate: (self) => {
             const currentSlideIndex = Math.round(self.progress * (totalSlides - 1));
             const currentSlide = allSlides[currentSlideIndex];
@@ -405,11 +402,11 @@ const Projects = () => {
     });
 
     mm.add("(max-width: 768px)", () => {
-      // Mobile uses native scroll, no GSAP setup needed here except cleanup if any
+      // Mobile: No GSAP animation, uses native horizontal scroll
     });
 
     return () => mm.revert();
-  }, [allSlides.length, activeProject]); // Added activeProject to dep array if needed, but setState is safe.
+  }, [allSlides.length]); // Removed activeProject to prevent re-initialization
 
   const scrollToProject = (projectId) => {
     const slideIndex = allSlides.findIndex(slide => slide.projectId === projectId);
