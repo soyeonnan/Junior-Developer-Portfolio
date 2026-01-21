@@ -385,9 +385,14 @@ const Projects = () => {
           id: "projects-scroll",
           trigger: sectionRef.current,
           pin: true,
-          scrub: 1,
-          snap: 1 / (totalSlides - 1),
-          end: () => "+=" + (window.innerWidth * (totalSlides - 1)),
+          scrub: 0.5, // Add a little smoothing
+          snap: {
+            snapTo: 1 / (totalSlides - 1),
+            duration: { min: 0.2, max: 0.5 },
+            delay: 0.1
+          },
+          // Increase drag distance to make scrolling less sensitive/fast
+          end: () => "+=" + (window.innerWidth * totalSlides * 1.2),
           onUpdate: (self) => {
             const currentSlideIndex = Math.round(self.progress * (totalSlides - 1));
             const currentSlide = allSlides[currentSlideIndex];
@@ -400,17 +405,7 @@ const Projects = () => {
     });
 
     mm.add("(max-width: 768px)", () => {
-      // Mobile: Native Horizontal Scroll Tracking
-      // We don't pin. We just track which project is visible.
-      // Since we are using native scrolling on the container, we can use ScrollTrigger with horizontal: true
-      // BUT we need to target the container that scrolls.
-      // In this layout, the '.projects-scroll-wrapper' (which we will ensure allows scroll) scrolls.
-      // For simplicity in React, let's just assume the wrapperRef's PARENT scrolls.
-
-      // Actually, we can just use a simple ScrollTrigger on the wrapper itself if it moved? 
-      // No, for native scroll, the wrapper doesn't move via transform. The VIEWPORT moves.
-      // So we need to trigger based on scroll position of the container.
-      // Let's rely on a simple scroll listener on the container for mobile active state to avoid complex GSAP horizontal config on a container we just made scrollable.
+      // Mobile uses native scroll, no GSAP setup needed here except cleanup if any
     });
 
     return () => mm.revert();
@@ -422,7 +417,9 @@ const Projects = () => {
       if (window.innerWidth > 768) {
         // Desktop ScrollTo
         const totalSlides = allSlides.length;
+        // Calculate progress based on the slide index relative to total
         const progress = slideIndex / (totalSlides - 1);
+
         const scrollTriggerInstance = ScrollTrigger.getById("projects-scroll");
         if (scrollTriggerInstance) {
           const start = scrollTriggerInstance.start;
@@ -432,10 +429,14 @@ const Projects = () => {
         }
       } else {
         // Mobile ScrollTo (Horizontal)
-        // We find the slide element or calculate position
-        const targetSlide = wrapperRef.current.children[slideIndex];
+        // Find the specific slide element by index
+        // Since we are using a flat map, the index corresponds to the child index
+        const scrollWrapper = document.querySelector('.projects-scroll-wrapper');
+        const slideNodes = scrollWrapper ? scrollWrapper.querySelectorAll('.project-slide-container') : [];
+        const targetSlide = slideNodes[slideIndex];
+
         if (targetSlide) {
-          targetSlide.scrollIntoView({ behavior: 'smooth', inline: 'start' });
+          targetSlide.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
         }
       }
     }
@@ -444,7 +445,8 @@ const Projects = () => {
   const handleMobileScroll = (e) => {
     if (window.innerWidth <= 768) {
       const scrollLeft = e.target.scrollLeft;
-      const width = e.target.clientWidth;
+      const width = e.target.clientWidth; // offsetWidth
+      // Use Math.round to find the closest slide
       const index = Math.round(scrollLeft / width);
       const currentSlide = allSlides[index];
       if (currentSlide && currentSlide.projectId !== activeProject) {

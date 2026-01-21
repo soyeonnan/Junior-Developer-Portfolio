@@ -1,162 +1,33 @@
+:root {
+  --nav-height: 60px;
+}
+
 .projects-section {
   background: #0a0a0a;
   color: #fff;
-  overflow-x: hidden;
   position: relative;
-  /* Desktop default: scroll-jack handles the flow */
+  /* Desktop Layout */
   height: 100vh;
-  padding-top: 0;
+  /* Push content down by header height to avoid overlap */
+  padding-top: var(--header-height);
+  overflow: hidden;
 }
 
-/* ... existing desktop styles ... */
-
-@media (max-width: 768px) {
-
-  /* Section Layout for Mobile */
-  .projects-section {
-    padding-top: 80px;
-    /* Offset for global fixed header */
-    height: auto;
-    min-height: 100vh;
-    overflow: visible;
-    /* Restore natural flow */
-  }
-
-  /* Nav Stickiness */
-  .project-nav-container {
-    position: sticky;
-    top: 80px;
-    /* Stick right under the fixed global header */
-    width: 100%;
-    justify-content: flex-start;
-    overflow-x: auto;
-    padding: 0 20px;
-    background: #0a0a0a;
-    -webkit-overflow-scrolling: touch;
-    z-index: 90;
-  }
-
-  /* Horizontal Scroll Wrapper */
-  .projects-scroll-wrapper {
-    margin-top: 0;
-    padding-top: 20px;
-    /* Gap between nav and cards */
-    height: auto;
-    overflow-x: auto;
-    scroll-snap-type: x mandatory;
-    -webkit-overflow-scrolling: touch;
-    width: 100vw;
-  }
-
-  /* Slide Container & Card Sizing */
-  .project-slide-container {
-    padding: 10px;
-    margin-top: 0 !important;
-    /* Reset desktop margin */
-    height: auto !important;
-    /* Let content dictate height or fix minimal height */
-    min-height: 70vh;
-    width: 100vw !important;
-    /* Full width for swipe */
-    scroll-snap-align: start;
-    flex-shrink: 0;
-  }
-
-  .slide-card {
-    width: 100%;
-    padding: 20px;
-    border-radius: 12px;
-    height: 100%;
-    overflow-y: visible;
-    /* Let card grow if needed or keep scroll */
-  }
-
-  /* Fonts & Visibility Tweaks */
-  .project-nav {
-    gap: 10px;
-    white-space: nowrap;
-    padding-right: 20px;
-  }
-
-  .project-nav-container::-webkit-scrollbar {
-    display: none;
-  }
-
-  .project-tab {
-    font-size: 0.9rem;
-    padding: 6px 12px;
-  }
-
-  .card-top-info {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-    margin-bottom: 1.5rem;
-  }
-
-  .card-top-info>div {
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  .card-project-title {
-    font-size: 1.1rem;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 60%;
-  }
-
-  .github-link {
-    padding: 4px 10px;
-    font-size: 0.75rem;
-  }
-
-  .project-duration {
-    font-size: 0.8rem !important;
-    margin-left: 0 !important;
-    margin-top: 5px;
-    display: block;
-  }
-
-  .slide-header h4 {
-    font-size: 1.4rem;
-  }
-
-  .slide-role {
-    font-size: 0.9rem;
-  }
-
-  .featured-summary,
-  .implementation-list li,
-  .trouble-problem,
-  .trouble-solution,
-  .arch-description {
-    font-size: 0.95rem;
-  }
-
-  .arch-diagram {
-    font-size: 0.7rem;
-  }
-}
-
-/* Sticky Navigation - Default Desktop: Absolute */
+/* Sticky Navigation (Desktop) */
 .project-nav-container {
   position: absolute;
-  top: 0;
+  top: var(--header-height);
+  /* Position right below the global header */
   left: 0;
   width: 100%;
-  height: 60px;
+  height: var(--nav-height);
   z-index: 90;
   background: rgba(10, 10, 10, 0.95);
   border-bottom: 1px solid #333;
-  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
-/* ... existing styles ... */
 
 .project-nav {
   display: flex;
@@ -187,22 +58,22 @@
   font-weight: 700;
 }
 
-/* Container Adjustments */
+/* Projects List & Container */
 .projects-list {
   display: flex;
   height: 100%;
-  /* Ensure it fills parent */
 }
 
 .project-slide-container {
-  padding: 20px;
-  /* Add some padding around card */
+  /* Desktop card container */
   box-sizing: border-box;
-  /* Height will be handled inline to dynamic calc if needed, or fixed here */
-  height: calc(100vh - 140px);
-  /* 100vh - Header(80) - Nav(60) */
-  margin-top: 140px;
-  /* Offset for Header + Nav */
+  /* Fill available height: Viewport - Header - Nav */
+  height: calc(100vh - var(--header-height) - var(--nav-height));
+  margin-top: var(--nav-height);
+  /* Push down by nav height */
+  width: 100vw;
+  /* One slide per view */
+  padding: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -213,7 +84,6 @@
   border: 1px solid #333;
   border-radius: 16px;
   padding: 30px 40px;
-  /* Slightly reduced top/bottom padding */
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
@@ -222,9 +92,8 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   width: 100%;
   height: 100%;
-  /* Fill the container */
   max-width: 1200px;
-  /* Limit width on large screens */
+  /* Constrain max width */
 }
 
 .slide-card:hover {
@@ -232,21 +101,27 @@
   box-shadow: 0 10px 50px rgba(0, 255, 204, 0.1);
 }
 
-/* New Card Top Info */
+/* Card Content Styles */
 .card-top-info {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
   padding-bottom: 1rem;
   border-bottom: 1px solid #333;
 }
 
 .card-project-title {
   font-family: var(--font-heading);
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: #fff;
   letter-spacing: 1px;
+}
+
+.project-duration {
+  color: #888;
+  font-size: 0.9rem;
+  margin-left: 15px;
 }
 
 .github-link {
@@ -261,21 +136,13 @@
   font-family: var(--font-heading);
   font-size: 0.85rem;
   text-transform: uppercase;
-  letter-spacing: 1px;
   text-decoration: none;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-}
-
-.github-link svg {
-  color: #fff;
 }
 
 .github-link:hover {
   background: var(--primary-color);
   border-color: var(--primary-color);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 15px rgba(212, 31, 77, 0.4);
   color: #000;
 }
 
@@ -292,16 +159,12 @@
   border-radius: 4px;
 }
 
-/* Slide Header */
 .slide-header {
   margin-bottom: 1.5rem;
-  border-bottom: none;
-  /* Removed as we have top info border */
-  padding-bottom: 0;
 }
 
 .slide-header h4 {
-  font-size: 2rem;
+  font-size: 1.8rem;
   color: var(--primary-color);
   margin-bottom: 0.5rem;
   font-family: var(--font-heading);
@@ -312,7 +175,7 @@
   color: var(--text-muted);
 }
 
-/* Featured Slide */
+/* Feature specific styles */
 .featured-summary {
   font-size: 1.1rem;
   line-height: 1.8;
@@ -335,7 +198,6 @@
   border: 1px solid #333;
 }
 
-/* Architecture Slide */
 .arch-diagram-container {
   background: #000;
   padding: 20px;
@@ -344,7 +206,6 @@
   margin-bottom: 1.5rem;
   overflow-x: auto;
   flex-grow: 1;
-  /* Allow diagram to take space */
 }
 
 .arch-diagram {
@@ -354,17 +215,6 @@
   color: #0f0;
   white-space: pre;
   margin: 0;
-}
-
-.arch-description {
-  color: #ccc;
-  line-height: 1.6;
-}
-
-/* Implementation Slide */
-.implementation-list {
-  list-style: none;
-  padding: 0;
 }
 
 .implementation-list li {
@@ -384,7 +234,6 @@
   font-weight: bold;
 }
 
-/* Troubleshooting Slide */
 .trouble-list {
   display: flex;
   flex-direction: column;
@@ -409,13 +258,6 @@
   font-size: 1rem;
 }
 
-/* Project Indicator */
-.project-indicator {
-  font-family: var(--font-heading);
-  letter-spacing: 1px;
-}
-
-/* Scrollbar styling for card content */
 .slide-card::-webkit-scrollbar {
   width: 8px;
 }
@@ -429,6 +271,116 @@
   border-radius: 4px;
 }
 
-.slide-card::-webkit-scrollbar-thumb:hover {
-  background: #555;
+
+/* =========================================
+   MOBILE / RESPONSIVE LAYOUT
+   ========================================= */
+@media (max-width: 768px) {
+  .projects-section {
+    padding-top: var(--header-height);
+    /* Keep 80px offset */
+    height: auto;
+    min-height: 100vh;
+    overflow: visible;
+    /* Allow native scroll */
+  }
+
+  /* Sticky Nav on Mobile */
+  .project-nav-container {
+    position: sticky;
+    top: var(--header-height);
+    /* Stick right below the global header which is presumably fixed */
+    height: 50px;
+    /* Slightly smaller nav height on mobile */
+    background: #0a0a0a;
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 0 16px;
+    z-index: 100;
+    align-items: center;
+    border-bottom: 1px solid #222;
+  }
+
+  /* Override margin from desktop (no margin needed since nav is relative/sticky in flow) */
+  .project-slide-container {
+    margin-top: 0 !important;
+    height: auto !important;
+    /* Allow content to determine height */
+    min-height: 60vh;
+    padding: 10px 16px 40px 16px;
+    /* Bottom padding for spacing */
+    width: 100vw;
+  }
+
+  /* Horizontal scroll wrapper */
+  .projects-scroll-wrapper {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    height: auto;
+    padding-top: 20px;
+  }
+
+  /* Ensure slides snap */
+  .project-slide-container {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  /* Card Mobile Styles */
+  .slide-card {
+    padding: 20px;
+    height: 100%;
+    /* Fill the container */
+  }
+
+  .card-top-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .card-top-info>div {
+    width: 100%;
+    flex-wrap: wrap;
+    /* allow title/badge wrap */
+  }
+
+  .card-project-title {
+    font-size: 1.2rem;
+    max-width: 100%;
+    margin-bottom: 4px;
+  }
+
+  .project-duration {
+    display: block;
+    margin-left: 0;
+    margin-top: 4px;
+    font-size: 0.8rem;
+  }
+
+  .project-nav {
+    padding-right: 20px;
+  }
+
+  .project-tab {
+    white-space: nowrap;
+    font-size: 0.85rem;
+    padding: 6px 12px;
+  }
+
+  /* Font adjustments for mobile readability */
+  .arch-diagram {
+    font-size: 0.65rem;
+  }
+
+  .slide-header h4 {
+    font-size: 1.4rem;
+  }
+
+  .featured-summary {
+    font-size: 0.95rem;
+  }
 }
