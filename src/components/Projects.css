@@ -2,23 +2,30 @@
   background: #0a0a0a;
   color: #fff;
   overflow-x: hidden;
-  /* Prevent horizontal scrollbar on body */
   position: relative;
+  height: 100vh;
+  /* Fix height to viewport */
+  padding-top: 0;
+  /* Removing default section padding */
 }
 
 /* Sticky Navigation */
 .project-nav-container {
   position: absolute;
-  top: 60px;
-  /* Offset for sticky header height */
+  top: 80px;
+  /* Match header height */
   left: 0;
   width: 100%;
-  z-index: 100;
+  height: 60px;
+  /* Fixed height for nav */
+  z-index: 90;
+  /* Below header (1000) but above content */
   background: rgba(10, 10, 10, 0.95);
   border-bottom: 1px solid #333;
-  padding: 10px 0;
+  padding: 0;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .project-nav {
@@ -50,32 +57,44 @@
   font-weight: 700;
 }
 
-/* Rest of existing styles... */
-/* Slide Container & Card */
+/* Container Adjustments */
 .projects-list {
-  /* Layout handled by inline styles for dynamic width, 
-     but we ensure flex is set here too just in case */
   display: flex;
+  height: 100%;
+  /* Ensure it fills parent */
 }
 
 .project-slide-container {
-  /* Dimensions handled inline */
-  padding: 0 20px;
+  padding: 20px;
+  /* Add some padding around card */
   box-sizing: border-box;
+  /* Height will be handled inline to dynamic calc if needed, or fixed here */
+  height: calc(100vh - 140px);
+  /* 100vh - Header(80) - Nav(60) */
+  margin-top: 140px;
+  /* Offset for Header + Nav */
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .slide-card {
   background: #111;
   border: 1px solid #333;
   border-radius: 16px;
-  padding: 40px;
+  padding: 30px 40px;
+  /* Slightly reduced top/bottom padding */
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  /* In case content overflows vertically */
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 100%;
+  height: 100%;
+  /* Fill the container */
+  max-width: 1200px;
+  /* Limit width on large screens */
 }
 
 .slide-card:hover {
@@ -83,11 +102,72 @@
   box-shadow: 0 10px 50px rgba(0, 255, 204, 0.1);
 }
 
+/* New Card Top Info */
+.card-top-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #333;
+}
+
+.card-project-title {
+  font-family: var(--font-heading);
+  font-size: 1.2rem;
+  color: #fff;
+  letter-spacing: 1px;
+}
+
+.github-link {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(10, 10, 10, 0.95);
+  color: #fff;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1px solid #333;
+  font-family: var(--font-heading);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.github-link svg {
+  color: #fff;
+}
+
+.github-link:hover {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(212, 31, 77, 0.4);
+  color: #000;
+}
+
+.github-link:hover svg {
+  color: #000;
+}
+
+.card-pagination {
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+  color: var(--primary-color);
+  background: rgba(212, 31, 77, 0.1);
+  padding: 4px 10px;
+  border-radius: 4px;
+}
+
 /* Slide Header */
 .slide-header {
-  margin-bottom: 2rem;
-  border-bottom: 1px solid #222;
-  padding-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  border-bottom: none;
+  /* Removed as we have top info border */
+  padding-bottom: 0;
 }
 
 .slide-header h4 {
@@ -133,6 +213,8 @@
   border: 1px dashed #444;
   margin-bottom: 1.5rem;
   overflow-x: auto;
+  flex-grow: 1;
+  /* Allow diagram to take space */
 }
 
 .arch-diagram {
@@ -140,7 +222,6 @@
   font-size: 0.85rem;
   line-height: 1.4;
   color: #0f0;
-  /* Terminal green look */
   white-space: pre;
   margin: 0;
 }
