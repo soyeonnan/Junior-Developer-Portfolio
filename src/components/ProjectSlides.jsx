@@ -1,20 +1,40 @@
 import React from 'react';
 import './Projects.css'; // Re-use projects CSS for now
 
-export const FeaturedSlide = ({ summary, role, stack, title }) => (
-    <div className="slide-content featured-slide">
-        <div className="slide-header">
-            <h4>{title}</h4>
-            <p className="slide-role">{role}</p>
-        </div>
-        <div className="slide-body">
-            <p className="featured-summary">{summary}</p>
-            <div className="tech-stack-display">
-                {stack.map((tech, i) => (
-                    <span key={i} className="tech-badge">{tech}</span>
-                ))}
+export const FeaturedSlide = ({ summary, role, stack, title, media }) => (
+    <div className={`slide-content featured-slide ${media ? 'has-media' : ''}`}>
+        <div className="featured-content-left">
+            <div className="slide-header">
+                <h4>{title}</h4>
+                <p className="slide-role">{role}</p>
+            </div>
+            <div className="slide-body">
+                <p className="featured-summary">{summary}</p>
+                <div className="tech-stack-display">
+                    {stack.map((tech, i) => (
+                        <span key={i} className="tech-badge">{tech}</span>
+                    ))}
+                </div>
             </div>
         </div>
+        {media && (
+            <div className="featured-media-right">
+                <div className="media-container">
+                    {media.type === 'video' ? (
+                        <iframe
+                            src={media.url}
+                            title={media.alt || "Project Video"}
+                            className="project-media-video"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                        ></iframe>
+                    ) : (
+                        <img src={media.url} alt={media.alt || "Project Overview"} className="project-media-img" />
+                    )}
+                    {media.caption && <p className="media-caption">{media.caption}</p>}
+                </div>
+            </div>
+        )}
     </div>
 );
 
@@ -59,6 +79,11 @@ export const TroubleSlide = ({ items = [], title }) => (
                         <div className="trouble-problem">
                             <strong>🚨 Problem:</strong> {item.problem}
                         </div>
+                        {item.attempt && (
+                            <div className="trouble-attempt">
+                                <strong>🛠️ Attempt:</strong> {item.attempt}
+                            </div>
+                        )}
                         <div className="trouble-solution">
                             <strong>✅ Solution:</strong> {item.solution}
                         </div>
